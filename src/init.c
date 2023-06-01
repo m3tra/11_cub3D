@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:08 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/15 15:57:20 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/01 10:12:50 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,16 @@ static t_screen	*init_screen(t_app *app)
 	s = ft_calloc(1, sizeof(t_screen));
 	if (!s)
 		err_exit("Failed ft_calloc @init_screen", app);
-
-	s->width = app->game->map->max_width * TILE_SIZE;
-	s->height = app->game->map->max_height * TILE_SIZE;
-
+	if (DIMENTIONS == 2)
+	{
+		s->width = app->game->map->max_width * TILE_SIZE;
+		s->height = app->game->map->max_height * TILE_SIZE;
+	}
+	else if (DIMENTIONS == 3)
+	{
+		s->width = WIN_WIDTH;
+		s->height = WIN_HEIGHT;
+	}
 	s->win = mlx_new_window(app->mlx, s->width, s->height, TITLE);
 	if (!s->win)
 		err_exit("Failed mlx_new_window @init_screen", app);

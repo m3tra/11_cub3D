@@ -94,7 +94,7 @@ ifeq (${PEDANTIC},true)
 	CFLAGS += -Wdisabled-optimization -Wformat=2 -Wuninitialized
 	CFLAGS += -Winit-self -Wmissing-include-dirs -Wredundant-decls -Wshadow
 	CFLAGS += -Wstrict-overflow=5 -Wundef -fdiagnostics-show-option
-	CFLAGS += -fstack-protector-all -fstack-clash-protection
+	CFLAGS += -fstack-protector-all
 	ifeq (${CC},gcc)
 		CFLAGS += -Wformat-signedness -Wformat-truncation=2 -Wformat-overflow=2
 		CFLAGS += -Wlogical-op -Wstringop-overflow=4

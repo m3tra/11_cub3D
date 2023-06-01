@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/15 19:12:33 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/01 10:11:35 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@
 # endif
 
 # define DIMENTIONS		2
+# define WIN_WIDTH		1280
+# define WIN_HEIGHT		720
 
 # define CIRCLE_RADIUS	75
 

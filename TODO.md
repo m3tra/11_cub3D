@@ -128,3 +128,8 @@ of your choice.
 - Doors which can open and close.
 - Animated sprite.
 - Rotate the point of view with the mouse.
+
+
+
+Change mlx window to print 3d environment
+scale down minimap
