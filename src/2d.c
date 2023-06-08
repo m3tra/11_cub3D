@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 10:30:46 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/01 10:05:06 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/07 17:15:14 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,6 @@ void draw_rays(t_app *app, t_float_p pos, float pa)
 				dof++;
 			}
 		}
-
 		if (disV < disH)
 		{
 			rx = vx;
@@ -238,16 +237,16 @@ void draw_rays(t_app *app, t_float_p pos, float pa)
 		// if (ca > 2 * M_PI)
 		// 	ca -= 2 * M_PI;
 		// disT = disT * cos(ca); //fisheye fix
-		// float lineH = (((64 * app->screen->width) / 320 * app->screen->width) / disT); //line height
-		// if (lineH > app->screen->width)
-		// 	lineH = app->screen->width;
+		// float lineH = ((((64 * WIN_WIDTH) / 320) * WIN_WIDTH) / disT); //line height
+		// if (lineH > WIN_WIDTH)
+		// 	lineH = WIN_WIDTH;
 		// int a = -1;
 		// int b;
-		// while (a < app->screen->width)
+		// while (a < WIN_WIDTH)
 		// {
-		// 	float off = app->screen->height/2 - lineH/2;
+		// 	float off = WIN_HEIGHT/2 - lineH/2;
 		// 	b = off;
-		// 	while (b < (app->screen->height - off))
+		// 	while (b < (WIN_HEIGHT - off))
 		// 	{
 		// 		my_mlx_pixel_put(app->screen->img, a, b, color);
 		// 		b++;

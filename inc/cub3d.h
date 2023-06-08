@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/01 10:11:35 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/07 23:18:51 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,11 @@
 #  define M_PI			3.141592653
 # endif
 
-# define DIMENTIONS		2
-# define WIN_WIDTH		1280
-# define WIN_HEIGHT		720
+# define DIMENTIONS		3
+# define WIN_WIDTH		1024
+# define WIN_HEIGHT		512
+
+# define FOV			1.570796
 
 # define CIRCLE_RADIUS	75
 
@@ -59,6 +61,20 @@ typedef struct s_tile
 	int			x;
 	int			y;
 }	t_int_p;
+
+typedef struct s_check
+{
+	float		rx;
+	float		ry;
+	float		xo;
+	float		yo;
+	int			z;
+	double		lh;
+	double		lo;
+	u_int32_t	color;
+	double		texoff;
+	float		disT;
+}	t_check;
 
 /*
 **	Facing directions (angle):

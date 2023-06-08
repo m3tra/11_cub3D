@@ -132,4 +132,4 @@ of your choice.
 
 
 Change mlx window to print 3d environment
-scale down minimap
+scale down 2d map
