@@ -1,35 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   cleanup2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/08 16:53:19 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/13 12:12:37 by fheaton-         ###   ########.fr       */
+/*   Created: 2023/06/13 11:02:15 by fheaton-          #+#    #+#             */
+/*   Updated: 2023/06/13 11:02:32 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-// Prints how to run program to stdout
-static void	usage(void)
+void	free_matrix(void **matrix, void (*del)(void *))
 {
-	printf("Usage:\n");
-	printf("\t./cub3D {map file}\n");
-	printf("\t(Map file must have .cub extension)\n");
-	exit(EXIT_FAILURE);
-}
+	int	i;
 
-int	main(int argc, char **argv)
-{
-	t_app	*app;
-
-	if (argc != 2)
-		usage();
-	check_macros();
-	app = init_app(argv[1]);
-	setup_mlx_hooks(app);
-	mlx_loop(app->mlx);
-	return (0);
+	if (!matrix || !del)
+		return ;
+	i = -1;
+	while (matrix[++i])
+		del(matrix[i]);
+	free(matrix);
 }

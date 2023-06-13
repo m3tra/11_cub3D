@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:08 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/01 10:56:26 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/13 11:35:12 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,25 +62,32 @@ t_entity	init_player(int x, int y, char facing)
 	return (player);
 }
 
+void	init_tex_vars(t_game *game)
+{
+	game->textures->n_wall = NULL;
+	game->textures->s_wall = NULL;
+	game->textures->e_wall = NULL;
+	game->textures->w_wall = NULL;
+}
+
 // Returns allocated and initialized t_game*
-static t_game	*init_game(const char *map_filename)
+static t_game	*init_game(const char *map_filename, t_app *app)
 {
 	t_game	*game;
 
 	game = ft_calloc(1, sizeof(t_game));
 	if (!game)
 		err_exit("Failed ft_calloc @init_game", NULL);
-
-	game->textures = ft_calloc(1, sizeof(t_textures));
+	game->textures = ft_calloc(1, sizeof(t_tex));
 	if (!game->textures)
 		err_exit("Failed ft_calloc @init_game", NULL);
-
 	game->map = init_map(map_filename);
 	if (!is_map_closed(game->map))
 		err_exit("Map not enclosed by walls", NULL);
 	parse_map(game);
-
-
+	init_tex_vars(game);
+	if (get_tex(game, app->mlx) > 0)
+		err_exit("Failed to load textures @init_game", app);
 	return (game);
 }
 
@@ -92,13 +99,10 @@ t_app	*init_app(const char *map_filename)
 	app = ft_calloc(1, sizeof(t_app));
 	if (!app)
 		err_exit("Failed ft_calloc @init_app", app);
-
 	app->mlx = mlx_init();
 	if (!app->mlx)
 		err_exit("Failed mlx_init @init_app", app);
-
-	app->game = init_game(map_filename);
+	app->game = init_game(map_filename, app);
 	app->screen = init_screen(app);
-
 	return (app);
 }

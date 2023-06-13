@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:27 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/07 23:10:11 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/13 12:13:48 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define M_P2	(M_PI/2)
 #define M_P3	(3*M_PI/2)
 #define DR		0.01745329
+
 
 // Paints top half of the screen as ceiling_color and bottom half as floor_color
 void	draw_3d_background(t_app *app)
@@ -25,8 +26,8 @@ void	draw_3d_background(t_app *app)
 	size_t		y;
 
 	screen = app->screen;
-	floor_color = app->game->textures->floor_color = create_trgb(255, 85, 85, 85);
-	ceiling_color = app->game->textures->ceiling_color = create_trgb(255, 50, 50, 50);
+	floor_color = app->game->textures->floor_color = create_trgb(F_Color);
+	ceiling_color = app->game->textures->ceiling_color = create_trgb(C_Color);
 	y = 0;
 	while (y < (screen->height / 2))
 	{
@@ -190,162 +191,144 @@ float dist_3d(float ax, float ay, float bx, float by)
 	return (sqrt((bx-ax) * (bx-ax) + (by-ay) * (by-ay)));
 }
 
-t_check	h_check(t_map *map, double ang, t_float_p pos)
+double	h_check(t_map *map, double ang, t_check *h, t_float_p pos)
 {
-	t_check	c;
+	t_float_p	off;
 
 	if (ang > M_PI) //looking down
 	{
-		c.ry = ((int)pos.y) + 64;
-		c.rx = (pos.y - c.ry) * (-1 / tan(ang)) + pos.x;
-		c.yo = 64;
-		c.xo = -c.yo * (-1 / tan(ang));
+		h->ry = ((int)pos.y) + 64;
+		h->rx = (pos.y - h->ry) * (-1 / tan(ang)) + pos.x;
+		off = (t_float_p){.x = -1 * (-1 /tan(ang)), .y = 64};
 	}
 	else if (ang < M_PI) //looking up
 	{
-		c.ry = ((int)pos.y) - 0.0001;
-		c.rx = (pos.y - c.ry) * (-1 / tan(ang)) + pos.x;
-		c.yo = -64;
-		c.xo = -c.yo * (-1 / tan(ang));
+		h->ry = ((int)pos.y) - 0.0001;
+		h->rx = (pos.y - h->ry) * (-1 / tan(ang)) + pos.x;
+		off = (t_float_p){.x = (-1 /tan(ang)), .y = -64};
 	}
 	if (ang != 0 && ang != M_PI)
 	{
-		// printf("\nhry: %f\n", c.ry);
-		// printf("\nhrx: %f\n", c.rx);
-		while (c.ry >= 0 && c.ry/64 < map->max_height
-			&& c.rx >= 0 && c.rx/64 < map->max_width)
+		while (h->ry >= 0 && h->ry < map->max_height
+			&& h->rx >= 0 && h->rx < map->max_width)
 		{
-			if (map->map_arr[(int)c.ry/64][(int)c.rx/64] == '1')
-				c.z = dist_3d(c.rx, c.ry, pos.x, pos.y);
-			if (map->map_arr[(int)c.ry/64][(int)c.rx/64] == '1')
-				return(c);
-			c.rx += c.xo;
-			c.ry += c.yo;
+			if (map->map_arr[(int)h->ry][(int)h->rx] == '1')
+				return (h->z = dist_3d(h->rx, h->ry, pos.x, pos.y));
+			(void) (t_float_p){(h->rx += off.x), (h->ry += off.y)};
 		}
 	}
-	c.z = -1;
-	return (c);
+	return (h->z = -1);
 }
 
-t_check v_check(t_map *map, double ang, t_float_p pos)
+double v_check(t_map *map, double ang, t_check *v, t_float_p pos)
 {
-	t_check	c;
+	t_float_p	off;
 
 	if (ang < M_P2 || ang > M_P3) //looking right
 	{
-		c.rx = ((int)pos.x) - 0.0001;
-		c.ry = (pos.x - c.rx) * tan(ang) + pos.y;
-		c.xo = -64;
-		c.yo = -c.xo * tan(ang);
+		v->rx = ((int)pos.x) - 0.0001;
+		v->ry = (pos.x - v->rx) * tan(ang) + pos.y;
+		off = (t_float_p){.x = -64, .y = -tan(ang)};
 	}
 	else if (ang > M_P2 && ang < M_P3) //looking left
 	{
-		c.rx = ((int)pos.x) + 64;
-		c.ry = (pos.x - c.rx) * (-tan(ang)) + pos.y;
-		c.xo = 64;
-		c.yo = c.xo * tan(ang);
+		v->rx = ((int)pos.x) + 64;
+		v->ry = (pos.x - v->rx) * (-tan(ang)) + pos.y;
+		off = (t_float_p){.x = 64, .y = tan(ang)};
 	}
 	if (ang != M_P2 && ang != M_P3)
 	{
-		// printf("\nvry: %f\n", c.ry);
-		// printf("\nvrx: %f\n", c.rx);
-		while (c.ry >= 0 && c.ry/64 < map->max_height
-			&& c.rx >= 0 && c.rx/64 < map->max_width)
+		while (v->ry >= 0 && v->ry/64 < map->max_height
+			&& v->rx >= 0 && v->rx/64 < map->max_width)
 		{
-			if (map->map_arr[(int)c.ry/64][(int)c.rx/64] == '1')
-				c.z = dist_3d(c.rx, c.ry, pos.x, pos.y);
-			if (map->map_arr[(int)c.ry/64][(int)c.rx/64] == '1')
-				return(c);
-			c.rx += c.xo;
-			c.ry += c.yo;
+			if (map->map_arr[(int)v->ry][(int)v->rx] == '1')
+				return (v->z = dist_3d(v->rx, v->ry, pos.x, pos.y));
+			(void) (t_float_p){v->rx += off.x, v->ry += off.y};
+			
 		}
 	}
-	c.z = -1;
-	return (c);
+	return (v->z = -1);
 }
 
-t_check	aux(t_check h, t_check v)
+void	aux(double ang, t_check *hv, t_tex *tex, t_check *check)
 {
-	if ((h.z < v.z && h.z > 0.0) || v.z < 0)
+	if ((hv[0].z < hv[1].z && hv[0].z > 0.0) || hv[1].z < 0)
 	{
-		h.color = create_trgb(255, 255, 0, 0);
-		// check->tex.x = (check->x - (int)check->x) * TEXTURE_SIZE;
-		// check->texture = textures.so;
-		// if (ang > M_PI)
-		// 	check->tex.x = TEXTURE_SIZE - check->tex.x - 1;
-		// else
-		// 	check->texture = textures.no;
-		return (h);
+		*check = hv[0];
+		check->tex.x = (check->rx - (int)check->rx) * TEXTURE_SIZE;
+		check->texture = tex->s_wall;
+		if (ang > M_PI)
+			check->tex.x = TEXTURE_SIZE - check->tex.x - 1;
+		else
+			check->texture = tex->n_wall;
 	}
 	else
 	{
-		v.color = create_trgb(255, 255, 0, 0);
-		// check->tex.x = (check->y - (int)check->y) * TEXTURE_SIZE;
-		// check->texture = textures.we;
-		// if (ang > M_PI_2 && ang < M_PI_2 * 3)
-		// 	check->texture = textures.ea;
-		// else
-		// 	check->tex.x = TEXTURE_SIZE - check->tex.x - 1;
-		return (v);
+		*check = hv[1];
+		check->tex.x = (check->ry - (int)check->ry) * TEXTURE_SIZE;
+		check->texture = tex->w_wall;
+		if (ang > M_P2 && ang < M_P3)
+			check->texture = tex->e_wall;
+		else
+			check->tex.x = TEXTURE_SIZE - check->tex.x - 1;
 	}
 }
 
-t_check check_wall(t_map *map, t_float_p pos, double ang, float pa)
+t_check *check_wall(t_tex *tx,t_map *map, t_float_p pos, double ang, float pa)
 {
-	t_check h;
-	t_check v;
-	t_check check;
+	t_check hv[2];
+	t_check *check;
 
-	h = h_check(map, ang, pos);
-	v = v_check(map, ang, pos);
-	check = aux(h, v);
-	check.z = check.z * cos(fmod(pa - ang + 2 * M_PI,
+	hv[0] = (t_check){.rx = 0, .ry = 0, .z = 0};
+	hv[1] = (t_check){.rx = 0, .ry = 0, .z = 0};
+	check = ft_calloc(1, sizeof(t_check));
+	h_check(map, ang, &hv[0], pos);
+	v_check(map, ang, &hv[1], pos);
+	aux(ang, hv, tx, check);
+	check->z = check->z * cos(fmod(pa - ang + 2 * M_PI,
 				2 * M_PI));
-	printf("\ncheck z: %d\n", check.z);
-	check.lh = (double)WIN_HEIGHT / check.z;
-	check.lo = ((double)WIN_HEIGHT - check.lh) / 2;
-	if (check.lo < 0)
-		check.texoff = (check.lh - WIN_HEIGHT) / 2.0;
-	if (check.lo < 0)
-		check.lo = 0;
-	// check->tex.y = check->texoff * (TEXTURE_SIZE / (double)check->lh);
+	check->lh = (double)WIN_HEIGHT / check->z;
+	check->lo = ((double)WIN_HEIGHT - check->lh) / 2;
+	if (check->lo < 0)
+		check->texoff = (check->lh - WIN_HEIGHT) / 2.0;
+	if (check->lo < 0)
+		check->lo = 0;
+	check->tex.y = check->texoff * (TEXTURE_SIZE / (double)check->lh);
 	return (check);
 }
 
-void drawWalls(t_app *app, t_float_p pos, float pa)
+void drawWalls(t_app *app, t_map *map, t_float_p pos, float pa)
 {
-	t_map		*map;
+	t_check		*check;
 	double		ang;
-	t_check		check;
 	int			a;
 	int			b;
 	int			c;
 
-	map = app->game->map;
 	a = -1;
 	while (++a < WIN_WIDTH)
 	{
 		ang = (a * FOV / WIN_WIDTH) - FOV / 2;
 		ang = fmod(pa + ang + (2 * M_PI), (2 * M_PI));
-		check = check_wall(map, pos, ang, pa);
-		b = check.lo -1;
-		printf("\nlh: %f\n", check.lh);
-		printf("\nlo: %f\n", check.lo);
-		while (++b < WIN_WIDTH && b < check.lh + check.lo)
+		check = check_wall(app->game->textures, map, pos, ang, pa);
+		b = check->lo -1;
+		while (++b < WIN_WIDTH && b < check->lh + check->lo)
 		{
 			c = -1;
 			while (++c)
-				my_mlx_pixel_put(app->screen->img, a + c, b, check.color);
+				my_mlx_pixel_put(&app->screen->img[1], a + c, b,
+					check->texture[(int)check->tex.y][(int)(check->tex.x)]);
+			check->tex.y += TEXTURE_SIZE / (double)check->lh;
+			(check->tex.y >= TEXTURE_SIZE) && (check->tex.y = TEXTURE_SIZE - 1);
 		}
 	}
 }
 
-
 int	draw3d(t_app *app)
 {
 	draw_3d_background(app);
-	drawWalls(app, app->game->player.pos, app->game->player.facing);
-	
+	drawWalls(app, app->game->map,
+		app->game->player.pos, app->game->player.facing);
 
 	my_mlx_put_image_to_window(app);
 	return (1);

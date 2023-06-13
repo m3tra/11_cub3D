@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 03:32:33 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/15 16:05:20 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/13 12:10:53 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,18 @@ static void	free_screen(t_app *app)
 }
 
 // Frees textures object
-static void	free_textures(t_textures *textures)
+static void	free_textures(t_tex *textures)
 {
 	if (textures)
 	{
-		ft_free(textures->n_wall);
-		ft_free(textures->s_wall);
-		ft_free(textures->w_wall);
-		ft_free(textures->e_wall);
+		if (textures->n_wall)
+			free_matrix((void **)textures->n_wall, NULL);
+		if (textures->s_wall)
+			free_matrix((void **)textures->n_wall, NULL);
+		if (textures->e_wall)
+			free_matrix((void **)textures->n_wall, NULL);
+		if (textures->w_wall)
+			free_matrix((void **)textures->n_wall, NULL);
 		free(textures);
 	}
 }
@@ -62,7 +66,8 @@ static void	free_game(t_game *game)
 {
 	if (game)
 	{
-		free_textures(game->textures);
+		if (game->textures)
+			free_textures(game->textures);
 		free_map(game->map);
 		free(game);
 	}

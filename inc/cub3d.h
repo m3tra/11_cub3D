@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/07 23:18:51 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/13 11:07:43 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@
 # define WIN_WIDTH		1024
 # define WIN_HEIGHT		512
 
+#define F_Color			255, 85, 85, 85
+#define C_Color			255, 50, 50, 50
+#define NO_tex			"res/Wall-000.xpm"
+#define SO_tex			"res/Wall-002.xpm"
+#define WE_tex			"res/Wall-001.xpm"
+#define EA_tex			"res/Wall-003.xpm"
+#define TEXTURE_SIZE	64
+
 # define FOV			1.570796
 
 # define CIRCLE_RADIUS	75
@@ -64,16 +72,14 @@ typedef struct s_tile
 
 typedef struct s_check
 {
-	float		rx;
-	float		ry;
-	float		xo;
-	float		yo;
-	int			z;
-	double		lh;
-	double		lo;
-	u_int32_t	color;
-	double		texoff;
-	float		disT;
+	float			rx;
+	float			ry;
+	int				z;
+	t_float_p		tex;
+	int				**texture;
+	double			lh;
+	double			lo;
+	double			texoff;
 }	t_check;
 
 /*
@@ -99,19 +105,19 @@ typedef struct s_map
 	char		**map_arr;
 }	t_map;
 
-typedef struct s_textures
+typedef struct s_tex
 {
-	char		*n_wall;
-	char		*s_wall;
-	char		*w_wall;
-	char		*e_wall;
+	int			**n_wall;
+	int			**s_wall;
+	int			**w_wall;
+	int			**e_wall;
 	u_int32_t	ceiling_color;
 	u_int32_t	floor_color;
-}	t_textures;
+}	t_tex;
 
 typedef struct s_game
 {
-	t_textures	*textures;
+	t_tex		*textures;
 	t_map		*map;
 	t_entity	player;
 	size_t		n_torches;
@@ -134,7 +140,7 @@ typedef struct s_screen
 	size_t		width;
 	size_t		height;
 	void		*win;
-	t_img		*img;
+	t_img		*img;	
 }	t_screen;
 
 // App
@@ -164,6 +170,9 @@ t_map		*init_map(const char *filename);
 
 t_img		*import_image(t_app *app, char a, int x, int y);
 void		place_img(t_app *app, char tile, t_int_p p);
+
+// Textures
+int			get_tex(t_game *game, void *mlx);
 
 // Checks
 
@@ -202,6 +211,7 @@ int			draw3d(t_app *app);
 
 // Cleanup
 
+void		free_matrix(void **matrix, void (*del)(void *));
 void		free_app(t_app *app);
 
 // Utils
