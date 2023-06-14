@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:27 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/13 12:13:48 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/14 22:31:39 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,29 +188,32 @@ void	draw_3d_background(t_app *app)
 
 float dist_3d(float ax, float ay, float bx, float by)
 {
-	return (sqrt((bx-ax) * (bx-ax) + (by-ay) * (by-ay)));
+	double ret;
+
+	ret = sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
+	return (ret);
 }
 
 double	h_check(t_map *map, double ang, t_check *h, t_float_p pos)
 {
 	t_float_p	off;
 
-	if (ang > M_PI) //looking down
+	if (ang > M_PI) //looking up
 	{
-		h->ry = ((int)pos.y) + 64;
+		h->ry = ((int)pos.y) + 1.0001;
 		h->rx = (pos.y - h->ry) * (-1 / tan(ang)) + pos.x;
-		off = (t_float_p){.x = -1 * (-1 /tan(ang)), .y = 64};
+		off = (t_float_p){.x = -1 * (-1 / tan(ang)), .y = 1};
 	}
-	else if (ang < M_PI) //looking up
+	else if (ang < M_PI) //looking down
 	{
 		h->ry = ((int)pos.y) - 0.0001;
 		h->rx = (pos.y - h->ry) * (-1 / tan(ang)) + pos.x;
-		off = (t_float_p){.x = (-1 /tan(ang)), .y = -64};
+		off = (t_float_p){.x = (-1 / tan(ang)), .y = -1};
 	}
 	if (ang != 0 && ang != M_PI)
 	{
-		while (h->ry >= 0 && h->ry < map->max_height
-			&& h->rx >= 0 && h->rx < map->max_width)
+		while (h->ry >= 0 && h->ry < map->max_width
+			&& h->rx >= 0 && h->rx < map->max_height)
 		{
 			if (map->map_arr[(int)h->ry][(int)h->rx] == '1')
 				return (h->z = dist_3d(h->rx, h->ry, pos.x, pos.y));
@@ -224,22 +227,22 @@ double v_check(t_map *map, double ang, t_check *v, t_float_p pos)
 {
 	t_float_p	off;
 
-	if (ang < M_P2 || ang > M_P3) //looking right
+	if (ang < M_P2 || ang > M_P3) //looking left
 	{
 		v->rx = ((int)pos.x) - 0.0001;
-		v->ry = (pos.x - v->rx) * tan(ang) + pos.y;
-		off = (t_float_p){.x = -64, .y = -tan(ang)};
+		v->ry = (pos.x - v->rx) * -tan(ang) + pos.y;
+		off = (t_float_p){.x = -1, .y = -tan(ang)};
 	}
-	else if (ang > M_P2 && ang < M_P3) //looking left
+	else if (ang > M_P2 && ang < M_P3) //looking right
 	{
-		v->rx = ((int)pos.x) + 64;
+		v->rx = ((int)pos.x) + 1.0001;
 		v->ry = (pos.x - v->rx) * (-tan(ang)) + pos.y;
-		off = (t_float_p){.x = 64, .y = tan(ang)};
+		off = (t_float_p){.x = 1, .y = tan(ang)};
 	}
 	if (ang != M_P2 && ang != M_P3)
 	{
-		while (v->ry >= 0 && v->ry/64 < map->max_height
-			&& v->rx >= 0 && v->rx/64 < map->max_width)
+		while (v->ry >= 0 && v->ry < map->max_height
+			&& v->rx >= 0 && v->rx < map->max_width)
 		{
 			if (map->map_arr[(int)v->ry][(int)v->rx] == '1')
 				return (v->z = dist_3d(v->rx, v->ry, pos.x, pos.y));
@@ -312,24 +315,40 @@ void drawWalls(t_app *app, t_map *map, t_float_p pos, float pa)
 		ang = fmod(pa + ang + (2 * M_PI), (2 * M_PI));
 		check = check_wall(app->game->textures, map, pos, ang, pa);
 		b = check->lo -1;
-		while (++b < WIN_WIDTH && b < check->lh + check->lo)
+		while (++b < WIN_HEIGHT && b < check->lh + check->lo)
 		{
 			c = -1;
-			while (++c)
-				my_mlx_pixel_put(&app->screen->img[1], a + c, b,
+			while (++c < 1)
+			{
+				// printf("\n%d\n", check->texture[(int)check->tex.y][(int)(check->tex.x)]);
+				my_mlx_pixel_put2(app->screen->img, a + c, b,
 					check->texture[(int)check->tex.y][(int)(check->tex.x)]);
+			}
 			check->tex.y += TEXTURE_SIZE / (double)check->lh;
 			(check->tex.y >= TEXTURE_SIZE) && (check->tex.y = TEXTURE_SIZE - 1);
 		}
 	}
 }
 
+float	fix_angle(float pa)
+{
+	if (pa < M_PI)
+		pa = M_P2 - (pa - M_P2);
+	else if (pa < M_P3)
+		pa = 2 * M_PI - (pa - M_PI);
+	else
+		pa = M_PI + (2 * M_PI - pa);
+	return (pa);
+}
+
 int	draw3d(t_app *app)
 {
+	float pa;
+	
+	pa = fix_angle(app->game->player.facing);
 	draw_3d_background(app);
 	drawWalls(app, app->game->map,
-		app->game->player.pos, app->game->player.facing);
-
+		app->game->player.pos, pa);
 	my_mlx_put_image_to_window(app);
 	return (1);
 }

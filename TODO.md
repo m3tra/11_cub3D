@@ -129,7 +129,11 @@ of your choice.
 - Animated sprite.
 - Rotate the point of view with the mouse.
 
+----/ important /----
 
+change map parsing to accept texture paths and ceiling and floor rgb
+change map variable names for norminette
 
-Change mlx window to print 3d environment
+bonus:
 scale down 2d map
+print 3d and 2d on top

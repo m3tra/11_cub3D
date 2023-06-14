@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_mlx_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 15:13:00 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/14 13:57:34 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/14 20:21:57 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,17 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, u_int32_t color)
 		err_exit("NULL img @my_mlx_pixel_put", NULL);
 	dst = img->addr + (y * img->line_len + x * (img->bpp / 8));
 	*(u_int32_t *)dst = color;
+}
+
+void	my_mlx_pixel_put2(t_img *img, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = img->addr + (y * img->line_len + x * (img->bpp / 8));
+	dst[3] = color >> 24;
+	dst[2] = color >> 16;
+	dst[1] = color >> 8;
+	dst[0] = color;
 }
 
 char	*my_mlx_get_data_addr(t_img *img)

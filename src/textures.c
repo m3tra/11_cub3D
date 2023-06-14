@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 19:01:44 by fheaton-          #+#    #+#             */
-/*   Updated: 2023/06/13 11:33:42 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/14 21:36:43 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,22 +57,16 @@ int	texture_init(int ***tex)
 	return (1);
 }
 
-int		load_tex(void *mlx, int	***texture, char id)
+int	load_tex(void *mlx, int ***texture, char *path)
 {
 	t_img		tmp;
 	int			img_height;
 	int			img_width;
 
-	if (id == 'N')
-		tmp.img = mlx_xpm_file_to_image(mlx, NO_tex, &img_width, &img_height);
-	if (id == 'S')
-		tmp.img = mlx_xpm_file_to_image(mlx, SO_tex, &img_width, &img_height);
-	if (id == 'W')
-		tmp.img = mlx_xpm_file_to_image(mlx, WE_tex, &img_width, &img_height);
-	if (id == 'E')
-		tmp.img = mlx_xpm_file_to_image(mlx, EA_tex, &img_width, &img_height);
+	tmp.img = mlx_xpm_file_to_image(mlx, path, &img_width, &img_height);
 	if (!tmp.img)
-		return(-1);
+		return (-1);
+	tmp.addr = mlx_get_data_addr(tmp.img, &tmp.bpp, &tmp.line_len, &tmp.endian);
 	if (texture_init(texture))
 		voidp_to_matrix(tmp, texture, img_height, img_width);
 	mlx_destroy_image(mlx, tmp.img);
@@ -81,14 +75,34 @@ int		load_tex(void *mlx, int	***texture, char id)
 	return (1);
 }
 
+int	load_elements(void *mlx, t_tex *tex, int id)
+{
+	int			ret;
+
+	ret = 0;
+	if (id == 'N' && !tex->n_wall)
+		ret = load_tex(mlx, &tex->n_wall, NO_tex);
+	else if (id == 'S' && !tex->s_wall)
+		ret = load_tex(mlx, &tex->s_wall, SO_tex);
+	else if (id == 'E' && !tex->e_wall)
+		ret = load_tex(mlx, &tex->e_wall, EA_tex);
+	else if (id == 'W' && !tex->w_wall)
+		ret = load_tex(mlx, &tex->w_wall, WE_tex);
+	else
+		return (-1);
+	if (ret < 0)
+		return (ret);
+	return (tex->n_wall && tex->s_wall && tex->e_wall && tex->w_wall);
+}
+
 int		get_tex(t_game *game, void *mlx)
 {
 	int ret;
 
 	ret = 0;
-	ret = load_tex(mlx, &game->textures->n_wall, 'N');
-	ret = load_tex(mlx, &game->textures->s_wall, 'S');
-	ret = load_tex(mlx, &game->textures->w_wall, 'W');
-	ret = load_tex(mlx, &game->textures->e_wall, 'E');
+	ret = load_elements(mlx, game->textures, 'N');
+	ret = load_elements(mlx, game->textures, 'S');
+	ret = load_elements(mlx, game->textures, 'E');
+	ret = load_elements(mlx, game->textures, 'W');
 	return (ret);
 }

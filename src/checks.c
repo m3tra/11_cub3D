@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checks.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:04 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/14 20:30:31 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/13 22:54:06 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,6 @@ void	check_macros(void)
 {
 	if (DIMENTIONS != 2 && DIMENTIONS != 3)
 		err_exit("DIMENTIONS not 2 or 3", NULL);
-	if (TILE_SIZE < 8)
-		err_exit("TILE_SIZE too small", NULL);
+	// if (TILE_SIZE < 8)
+	// 	err_exit("TILE_SIZE too small", NULL);
 }

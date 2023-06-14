@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:48:00 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/15 15:00:11 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/13 22:54:06 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 // # include "cub3d.h"
 
-# define TILE_SIZE 64
+# define TILE_SIZE 1
 
 # ifndef BONUS
 #  define MAP_CHARS		" 01NSWE"

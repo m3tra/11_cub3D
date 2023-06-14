@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:08 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/13 11:35:12 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/13 22:48:09 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ t_entity	init_player(int x, int y, char facing)
 {
 	t_entity	player;
 
-	player.pos.x = (x * TILE_SIZE) + 32;
-	player.pos.y = (y * TILE_SIZE) + 32;
+	player.pos.x = (x * TILE_SIZE) + 0.5;
+	player.pos.y = (y * TILE_SIZE) + 0.5;
 
 	if (facing == 'N')
 		player.facing = M_PI / 2;
@@ -86,7 +86,7 @@ static t_game	*init_game(const char *map_filename, t_app *app)
 		err_exit("Map not enclosed by walls", NULL);
 	parse_map(game);
 	init_tex_vars(game);
-	if (get_tex(game, app->mlx) > 0)
+	if (get_tex(game, app->mlx) < 0)
 		err_exit("Failed to load textures @init_game", app);
 	return (game);
 }

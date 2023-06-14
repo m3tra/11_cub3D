@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/13 11:07:43 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/14 20:22:11 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,27 @@
 # define WIN_WIDTH		1024
 # define WIN_HEIGHT		512
 
-#define F_Color			255, 85, 85, 85
-#define C_Color			255, 50, 50, 50
-#define NO_tex			"res/Wall-000.xpm"
-#define SO_tex			"res/Wall-002.xpm"
-#define WE_tex			"res/Wall-001.xpm"
-#define EA_tex			"res/Wall-003.xpm"
-#define TEXTURE_SIZE	64
+# define F_Color			255, 85, 85, 85
+# define C_Color			255, 50, 50, 50
+# define NO_tex			"res/Wall-000.xpm"
+# define SO_tex			"res/Wall-002.xpm"
+# define WE_tex			"res/Wall-001.xpm"
+# define EA_tex			"res/Wall-003.xpm"
+# define TEXTURE_SIZE	64
 
 # define FOV			1.570796
 
 # define CIRCLE_RADIUS	75
 
-# define STEP_DISTANCE	5
+# define STEP_DISTANCE	0.08
 
 // Game
 
 // Float x,y
 typedef struct s_pos
 {
-	float		x;
-	float		y;
+	double		x;
+	double		y;
 }	t_float_p;
 
 // Int x, y
@@ -72,9 +72,9 @@ typedef struct s_tile
 
 typedef struct s_check
 {
-	float			rx;
-	float			ry;
-	int				z;
+	double			rx;
+	double			ry;
+	double			z;
 	t_float_p		tex;
 	int				**texture;
 	double			lh;
@@ -223,6 +223,7 @@ void		setup_mlx_hooks(t_app *app);
 // MLX Utils
 
 void		my_mlx_pixel_put(t_img *img, int x, int y, u_int32_t color);
+void		my_mlx_pixel_put2(t_img *img, int x, int y, int color);
 char		*my_mlx_get_data_addr(t_img *img);
 t_img		*my_mlx_new_image(void *mlx, int width, int height);
 void		my_mlx_put_image_to_window(t_app *app);
