@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:27 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/14 22:31:39 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/16 16:44:43 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,6 +349,7 @@ int	draw3d(t_app *app)
 	draw_3d_background(app);
 	drawWalls(app, app->game->map,
 		app->game->player.pos, pa);
+	draw2d(app);
 	my_mlx_put_image_to_window(app);
 	return (1);
 }

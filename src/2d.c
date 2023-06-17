@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 10:30:46 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/14 22:12:01 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/16 17:30:11 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ void	draw_2d_background(t_app *app)
 
 	screen = app->screen;
 	y = -1;
-	while (++y < screen->height)
+	while (++y < screen->height / 6)
 	{
 		x = -1;
-		while (++x < screen->width)
+		while (++x < screen->width / 6)
 			my_mlx_pixel_put(screen->img, x, y, create_trgb(255, 85, 85, 85));
 	}
 }
@@ -45,6 +45,7 @@ void	draw_tile(t_app *app, t_int_p pixel, u_int32_t trgb)
 		while (++x < TILE_SIZE - 1)
 			my_mlx_pixel_put(app->screen->img, x + pixel.x, y + pixel.y, trgb);
 	}
+	// printf("\na\n");
 }
 
 // Returns given tile's color
@@ -73,14 +74,14 @@ void	draw_map(t_app *app)
 
 	map = app->game->map;
 	tile_y = -1;
-	while (++tile_y < map->max_height)
+	while (++tile_y < map->max_height && tile_y < app->screen->height / 6)
 	{
 		tile_x = -1;
-		while (++tile_x < map->max_width)
+		while (++tile_x < map->max_width  && tile_x < app->screen->width / 6)
 		{
 			color = pick_color(map->map_arr[tile_y][tile_x]);
-			pixel.x = tile_x * TILE_SIZE;
-			pixel.y = tile_y * TILE_SIZE;
+			pixel.x = tile_x * TILE_SIZE + 4;
+			pixel.y = tile_y * TILE_SIZE + 4;
 			draw_tile(app, pixel, color);
 		}
 	}
@@ -138,30 +139,77 @@ void	draw_torches(t_app *app)
 	}
 }
 
-void	draw_player(t_app *app)
+// void	draw_player(t_app *app)
+// {
+// 	t_entity	player;
+// 	t_int_p		pixel;
+// 	player = app->game->player;
+// 	pixel.x = player.pos.x;
+// 	pixel.y = player.pos.y;
+// 	draw_circle(app->screen->img, pixel, create_trgb(255, 0, 0, 255));
+// 	draw_facing_ray(app, player.pos, player.delta);
+// }
+
+// void	draw_entities(t_app *app)
+// {
+// 	draw_player(app);
+// 	// draw_torches(app);
+// }
+
+void	draw_player(int x, int y, t_screen *s)
 {
-	t_entity	player;
-	t_int_p		pixel;
 
-	player = app->game->player;
-	pixel.x = player.pos.x;
-	pixel.y = player.pos.y;
-
-	draw_circle(app->screen->img, pixel, create_trgb(255, 0, 0, 255));
-	draw_facing_ray(app, player.pos, player.delta);
+	draw_circle2(s->img, s->width - x * MINIMAP_TILE_SIZE +
+		MINIMAP_TILE_SIZE / 2, y * MINIMAP_TILE_SIZE
+		+ MINIMAP_TILE_SIZE / 2, create_trgb(255, 0, 0, 255));
 }
 
-void	draw_entities(t_app *app)
+void	draw_square(int x, int y, int color, t_screen *s)
 {
-	draw_player(app);
-	draw_torches(app);
+	int	k;
+	int	l;
+
+	k = -1;
+	while (++k < MINIMAP_TILE_SIZE)
+	{
+		l = -1;
+		while (++l < MINIMAP_TILE_SIZE)
+		{
+			if (s->width - x * MINIMAP_TILE_SIZE + k >= 0
+				&& s->width - x * MINIMAP_TILE_SIZE + k < s->width
+				&& y * MINIMAP_TILE_SIZE + l >= 0
+				&& y * MINIMAP_TILE_SIZE + l < (int)s->height)
+				my_mlx_pixel_put(s->img, s->width - x * MINIMAP_TILE_SIZE + k,
+					y * MINIMAP_TILE_SIZE + l, color);
+		}
+	}
 }
 
-int	draw2d(t_app *app)
+void	render_map(t_game *game, t_screen *s)
 {
-	draw_2d_background(app);
-	draw_map(app);
-	draw_entities(app);
-	my_mlx_put_image_to_window(app);
-	return (1);
+	int	j;
+	int	i;
+	u_int32_t	c;
+
+	i = -1;
+	while (++i < (int)game->map->max_width)
+	{
+		j = 0;
+		while (++j <= (int)game->map->max_height)
+		{
+			c = pick_color(game->map->map_arr[i][game->map->max_width - j]);
+			draw_square(j, i, c, s);
+		}
+	}
+	draw_player((game->map->max_width - (int)game->player.pos.x),
+		(int)game->player.pos.y, s);
+}
+
+void	draw2d(t_app *app)
+{
+	render_map(app->game, app->screen);
+	// draw_2d_background(app);
+	// draw_map(app);
+	// draw_entities(app);
+	// my_mlx_put_image_to_window(app);
 }

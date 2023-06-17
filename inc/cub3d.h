@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/14 20:22:11 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/16 17:30:23 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,11 @@
 # define WE_tex			"res/Wall-001.xpm"
 # define EA_tex			"res/Wall-003.xpm"
 # define TEXTURE_SIZE	64
+# define MINIMAP_TILE_SIZE 10
 
 # define FOV			1.570796
 
-# define CIRCLE_RADIUS	75
+# define CIRCLE_RADIUS	20
 
 # define STEP_DISTANCE	0.08
 
@@ -198,10 +199,11 @@ u_int32_t	get_b(u_int32_t trgb);
 // 2D
 
 void		draw_2d_background(t_app *app);
-int			draw2d(t_app *app);
+void		draw2d(t_app *app);
 
 // 2D Drawing
 
+void		draw_circle2(t_img *img, int x, int y, u_int32_t color);
 void		draw_circle(t_img *img, t_int_p pixel, u_int32_t color);
 
 // 3D

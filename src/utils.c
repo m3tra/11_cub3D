@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 02:40:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/14 14:08:51 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/16 16:31:31 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void	setup_mlx_hooks(t_app *app)
 {
 	mlx_hook(app->screen->win, 17, (1L << 17), stop, app);
 	mlx_key_hook(app->screen->win, key_handler, app);
-	if (DIMENTIONS == 2)
-		mlx_loop_hook(app->mlx, draw2d, app);
-	else
-		mlx_loop_hook(app->mlx, draw3d, app);
+	// if (DIMENTIONS == 2)
+	// 	mlx_loop_hook(app->mlx, draw2d, app);
+	// else
+	mlx_loop_hook(app->mlx, draw3d, app);
 }
