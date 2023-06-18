@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:22 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/18 08:18:14 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 10:11:03 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,23 +57,27 @@ void	skip_lines(int fd, size_t n)
 void	set_map_size(t_map *map, int fd)
 {
 	char	*line;
-	int		ret;
 	int		len;
 
-	while (1)
+	while (get_next_line(fd, &line))
 	{
-		ret = get_next_line(fd, &line);
-		if (ret && line && line[0])
+		if (line != NULL)
+			len = ft_strlen(line);
+		if (!line || !len)
+		{
+			if (map->max_height > 0)
+				err_exit("Map is wrong @set_map_size", NULL);
+			map->file_line_number_start++;
+		}
+		else if (line && len)
 		{
 			++map->max_height;
-			len = ft_strlen(line);
 			if (len > map->max_width)
 				map->max_width = len;
 		}
 		ft_free(line);
-		if (!ret)
-			break ;
 	}
+	ft_free(line);
 }
 
 char	**prealloc_map_array(size_t max_height, size_t max_width)

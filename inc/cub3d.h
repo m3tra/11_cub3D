@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/18 08:38:06 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 10:24:29 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,11 +163,6 @@ void		skip_lines(int fd, size_t n);
 // Map2
 void		map_err_check(int player, t_game *game);
 void		check_line(t_game *game, int y);
-char		**map_dup(t_map *map);
-
-// Img
-t_img		*import_image(t_app *app, char a, int x, int y);
-void		place_img(t_app *app, char tile, t_int_p p);
 
 // Textures
 void		load_textures(t_app *app);
@@ -199,7 +194,6 @@ u_int32_t	get_g(u_int32_t trgb);
 u_int32_t	get_b(u_int32_t trgb);
 
 // 2D
-void		draw_2d_background(t_app *app);
 void		draw2d(t_app *app);
 
 // 2D Drawing

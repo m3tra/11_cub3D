@@ -6,74 +6,49 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 08:08:47 by fheaton-          #+#    #+#             */
-/*   Updated: 2023/06/18 08:33:47 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 10:23:36 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	recursive_map_check(t_map *map, char **map_arr, int x, int y)
+int	check_surroundings(t_map *map, int row, int column)
 {
-	char	c;
-
-	c = map_arr[y][x];
-	if (((!y || y == map->max_height - 1 || \
-		!x || x == map->max_width - 1) && \
-		c != '1' && c != ' ') || \
-		c == ' ')
+	if (map->map_arr[row][column - 1] == ' '
+		|| map->map_arr[row][column + 1] == ' '
+		|| map->map_arr[row - 1][column] == ' '
+		|| map->map_arr[row + 1][column] == ' ')
 		return (0);
-	if (c == '1' || c == 'X')
+	else
 		return (1);
-	if (map_arr[y - 1][x] == ' ' || \
-		map_arr[y + 1][x] == ' ' || \
-		map_arr[y][x - 1] == ' ' || \
-		map_arr[y][x + 1] == ' ')
-		return (0);
-	map_arr[y][x] = 'X';
-	return (recursive_map_check(map, map_arr, x, y - 1) && \
-			recursive_map_check(map, map_arr, x, y + 1) && \
-			recursive_map_check(map, map_arr, x - 1, y) && \
-			recursive_map_check(map, map_arr, x + 1, y));
-}
-
-char	**map_dup(t_map *map)
-{
-	char	**map_arr;
-	char	**new_map;
-	int		y;
-
-	map_arr = map->map_arr;
-	new_map = ft_calloc(map->max_height + 1, sizeof(char *));
-	if (!new_map)
-		err_exit("Failed ft_calloc @map_dup", NULL);
-	y = -1;
-	while (++y < map->max_height)
-		new_map[y] = ft_strdup(map_arr[y]);
-	return (new_map);
 }
 
 int	is_map_closed(t_map *map)
 {
-	int		res;
-	char	**new_map;
-	int		y;
-	int		x;
+	int		row;
+	int		column;
 
-	res = 0;
-	new_map = map_dup(map);
-	y = -1;
-	while (++y < map->max_height)
+	row = -1;
+	while (++row < map->max_height)
 	{
-		x = -1;
-		while (++x < map->max_width)
-			if (map->map_arr[y][x] == '0')
-				res = recursive_map_check(map, new_map, x, y);
+		column = -1;
+		while (map->map_arr[row][++column] != '\0')
+		{
+			if (map->map_arr[row][column] == '0'
+				|| map->map_arr[row][column] == 'N'
+				|| map->map_arr[row][column] == 'S'
+				|| map->map_arr[row][column] == 'E'
+				|| map->map_arr[row][column] == 'W')
+			{
+				if (row == 0 || row == map->max_height -1
+					|| column == 0 || column == map->max_width - 1)
+					return (0);
+				if (check_surroundings(map, row, column) == 0)
+					return (0);
+			}
+		}
 	}
-	y = -1;
-	while (++y < map->max_height)
-		free(new_map[y]);
-	free(new_map);
-	return (res);
+	return (1);
 }
 
 void	check_line(t_game *game, int y)

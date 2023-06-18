@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 02:18:08 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/18 08:20:20 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 10:32:29 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,12 @@ size_t	parse_tex_and_colors(t_game *game, int fd)
 {
 	size_t	n_lines_read;
 	char	*line;
-	int		ret;
 	t_tex	*tex;
 
 	tex = game->textures;
 	n_lines_read = 0;
-	while (1)
+	while (get_next_line(fd, &line))
 	{
-		ret = get_next_line(fd, &line);
 		if (line && line[0])
 		{
 			if (n_chars_before_whitespace(line, 0) == 2)
@@ -79,8 +77,7 @@ size_t	parse_tex_and_colors(t_game *game, int fd)
 		ft_free(line);
 		n_lines_read++;
 		if ((tex->n_wall_path && tex->s_wall_path && tex->w_wall_path && \
-			tex->e_wall_path && tex->ceiling_color && tex->floor_color) || \
-			!ret)
+			tex->e_wall_path && tex->ceiling_color && tex->floor_color))
 			break ;
 	}
 	return (n_lines_read);

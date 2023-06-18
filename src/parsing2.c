@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 08:15:31 by fheaton-          #+#    #+#             */
-/*   Updated: 2023/06/18 08:16:56 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 10:10:11 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	parse_map(t_map *map, int fd)
 	char	*line;
 	int		y;
 
-	skip_lines(fd, map->file_line_number_start + 1);
+	skip_lines(fd, map->file_line_number_start);
 	y = -1;
 	while (++y < map->max_height)
 	{
