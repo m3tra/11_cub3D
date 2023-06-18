@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:24 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/14 21:33:12 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 08:12:01 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static t_float_p	get_sideways_dest(t_entity player, int keycode)
 	}
 	delta.x = cos(facing) * STEP_DISTANCE;
 	delta.y = -sin(facing) * STEP_DISTANCE;
-
 	return (delta);
 }
 

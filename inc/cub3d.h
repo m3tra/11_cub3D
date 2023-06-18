@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:47:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/16 17:30:23 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 08:38:06 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,13 @@
 
 # define TITLE			"cub3D"
 
-# define BONUS			1
+# define BONUS			0
 
 # include "map.h"
+# include "defines.h"
 # ifndef M_PI
 #  define M_PI			3.141592653
 # endif
-
-# define DIMENTIONS		3
-# define WIN_WIDTH		1024
-# define WIN_HEIGHT		512
-
-# define F_Color			255, 85, 85, 85
-# define C_Color			255, 50, 50, 50
-# define NO_tex			"res/Wall-000.xpm"
-# define SO_tex			"res/Wall-002.xpm"
-# define WE_tex			"res/Wall-001.xpm"
-# define EA_tex			"res/Wall-003.xpm"
-# define TEXTURE_SIZE	64
-# define MINIMAP_TILE_SIZE 10
 
 # define FOV			1.570796
 
@@ -81,6 +69,7 @@ typedef struct s_check
 	double			lh;
 	double			lo;
 	double			texoff;
+	t_float_p		off;
 }	t_check;
 
 /*
@@ -95,6 +84,7 @@ typedef struct s_entity
 {
 	t_float_p	pos;
 	float		facing;
+	float		fix_f;
 	t_float_p	delta;
 }	t_entity;
 
@@ -102,8 +92,8 @@ typedef struct s_map
 {
 	const char	*filename;
 	size_t		file_line_number_start;
-	size_t		max_width;
-	size_t		max_height;
+	int			max_width;
+	int			max_height;
 	char		**map_arr;
 }	t_map;
 
@@ -143,10 +133,10 @@ typedef struct s_img
 
 typedef struct s_screen
 {
-	size_t		width;
-	size_t		height;
+	int			width;
+	int			height;
 	void		*win;
-	t_img		*img;
+	t_img		*img;	
 }	t_screen;
 
 // App
@@ -160,20 +150,22 @@ typedef struct s_app
 }	t_app;
 
 // Init
-
 t_entity	init_player(int x, int y, char facing);
-t_app		*init_app(const char *scene_description_filename);
+t_app		*init_app(const char *map_filename);
 
 // Map
-
 int			is_map_closed(t_map *map);
-void		check_line(t_game *game, size_t y);
+void		parse_line(t_game *game, int y);
 void		set_map_size(t_map *map, int fd);
 void		init_map(t_map *map, int fd);
 void		skip_lines(int fd, size_t n);
 
-// Img
+// Map2
+void		map_err_check(int player, t_game *game);
+void		check_line(t_game *game, int y);
+char		**map_dup(t_map *map);
 
+// Img
 t_img		*import_image(t_app *app, char a, int x, int y);
 void		place_img(t_app *app, char tile, t_int_p p);
 
@@ -183,21 +175,23 @@ void		load_textures(t_app *app);
 // Parsing
 void		parse_scene_description_file(t_app *app, const char *filename);
 
-// Checks
+// Parsing2
+void		parse_colors(t_tex *tex, const char *line);
+u_int32_t	read_rgb(const char *line);
+size_t		n_chars_before_whitespace(const char *line, size_t start_pos);
+void		parse_map(t_map *map, int fd);
+void		check_map_file_extension(const char *filename);
 
+// Checks
 void		check_invalid_chars(const char *line);
 void		check_map(t_game *game);
-void		check_map_file_extension(const char *filename);
 void		check_macros(void);
-
-// Movement
 
 // void		can_move(t_app *app, t_float_p dest);
 void		move(t_app *app, int keycode);
 void		rotate_view(t_app *app, int keycode);
 
 // Colors
-
 u_int32_t	create_trgb(u_int32_t t, u_int32_t r, u_int32_t g, u_int32_t b);
 u_int32_t	get_t(u_int32_t trgb);
 u_int32_t	get_r(u_int32_t trgb);
@@ -205,33 +199,28 @@ u_int32_t	get_g(u_int32_t trgb);
 u_int32_t	get_b(u_int32_t trgb);
 
 // 2D
-
 void		draw_2d_background(t_app *app);
 void		draw2d(t_app *app);
 
 // 2D Drawing
-
 void		draw_circle2(t_img *img, int x, int y, u_int32_t color);
 void		draw_circle(t_img *img, t_int_p pixel, u_int32_t color);
 
 // 3D
-
-void		draw_3d_background(t_app *app);
+t_check		*check_wall(t_game *g, t_float_p pos, double ang, float pa);
+void		draw_3d_background(t_app *app, u_int32_t f_clr, u_int32_t c_clr);
 int			draw3d(t_app *app);
 
 // Cleanup
-
 void		free_matrix(void **matrix);
 void		free_app(t_app *app);
 
 // Utils
-
 void		err_exit(const char *err, t_app *app);
 int			stop(void *param);
 void		setup_mlx_hooks(t_app *app);
 
 // MLX Utils
-
 void		my_mlx_pixel_put(t_img *img, int x, int y, u_int32_t color);
 void		my_mlx_pixel_put2(t_img *img, int x, int y, int color);
 char		*my_mlx_get_data_addr(t_img *img);

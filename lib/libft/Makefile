@@ -86,7 +86,7 @@ LANG := C
 CC := clang
 
 # Compiler flags
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -fPIC
 
 # Pedantic flags
 ifeq (${PEDANTIC},true)

@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 19:01:44 by fheaton-          #+#    #+#             */
-/*   Updated: 2023/06/16 16:45:21 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 08:25:03 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,14 @@ void	voidp_to_matrix(t_img *tmp, int **texture, int height, int width)
 	}
 }
 
-int	**texture_init()
+int	**texture_init(void)
 {
 	int		**tex;
-	size_t	y;
+	int		y;
 
 	tex = ft_calloc(TEXTURE_SIZE + 1, sizeof(int *));
 	if (!tex)
 		err_exit("Failed ft_calloc @texture_init", NULL);
-
 	y = -1;
 	while (++y < TEXTURE_SIZE)
 	{
@@ -55,7 +54,6 @@ int	**texture_init()
 		}
 	}
 	return (tex);
-
 }
 
 int	**load_tex(void *mlx, char *path)
@@ -67,11 +65,9 @@ int	**load_tex(void *mlx, char *path)
 
 	if (!path)
 		err_exit("Missing path @load_tex", NULL);
-
 	tmp = ft_calloc(1, sizeof(t_img));
 	if (!tmp)
 		err_exit("Failed ft_calloc @load_tex", NULL);
-
 	tmp->img = mlx_xpm_file_to_image(mlx, path, &img_width, &img_height);
 	if (!tmp->img)
 		err_exit("Failed mlx_xpm_file_to_image @load_tex", NULL);
@@ -79,6 +75,7 @@ int	**load_tex(void *mlx, char *path)
 	texture = texture_init();
 	voidp_to_matrix(tmp, texture, img_height, img_width);
 	mlx_destroy_image(mlx, tmp->img);
+	ft_free(tmp);
 	if (!texture)
 		err_exit("Failed to load texture @load_tex", NULL);
 	return (texture);

@@ -1,3 +1,10 @@
+NO ./res/Wall-000.xpm
+EA ./res/Wall-003.xpm
+SO ./res/Wall-002.xpm
+WE ./res/Wall-001.xpm
+F 85,85,85
+C 50,50,50
+
 1111111
 1110111
 1100011

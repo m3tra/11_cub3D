@@ -89,7 +89,7 @@ LANG := C
 ################################################################################
 
 # Compiler
-CC := clang
+CC := gcc
 
 # Compiler flags
 CFLAGS := -Wall -Wextra -Werror -O3

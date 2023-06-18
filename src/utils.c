@@ -6,7 +6,7 @@
 /*   By: fheaton- <fheaton-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 02:40:57 by fporto            #+#    #+#             */
-/*   Updated: 2023/06/16 16:31:31 by fheaton-         ###   ########.fr       */
+/*   Updated: 2023/06/18 08:25:23 by fheaton-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	key_handler(int keycode, void *param)
 	if (keycode == MLX_KEY_ESC)
 		stop(app);
 	else if (keycode == MLX_KEY_W || \
-			keycode == MLX_KEY_S ||
+			keycode == MLX_KEY_S || \
 			keycode == MLX_KEY_A || \
 			keycode == MLX_KEY_D)
 		move(app, keycode);
@@ -66,8 +66,5 @@ void	setup_mlx_hooks(t_app *app)
 {
 	mlx_hook(app->screen->win, 17, (1L << 17), stop, app);
 	mlx_key_hook(app->screen->win, key_handler, app);
-	// if (DIMENTIONS == 2)
-	// 	mlx_loop_hook(app->mlx, draw2d, app);
-	// else
 	mlx_loop_hook(app->mlx, draw3d, app);
 }
