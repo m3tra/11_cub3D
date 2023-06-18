@@ -12,14 +12,15 @@
 
 #include "cub3d.h"
 
-void	free_matrix(void **matrix, void (*del)(void *))
+void	free_matrix(void **matrix)
 {
 	int	i;
 
-	if (!matrix || !del)
+	if (!matrix)
 		return ;
+
 	i = -1;
 	while (matrix[++i])
-		del(matrix[i]);
+		free(matrix[i]);
 	free(matrix);
 }

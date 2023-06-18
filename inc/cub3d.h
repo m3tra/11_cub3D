@@ -101,6 +101,7 @@ typedef struct s_entity
 typedef struct s_map
 {
 	const char	*filename;
+	size_t		file_line_number_start;
 	size_t		max_width;
 	size_t		max_height;
 	char		**map_arr;
@@ -108,6 +109,10 @@ typedef struct s_map
 
 typedef struct s_tex
 {
+	char		*n_wall_path;
+	char		*s_wall_path;
+	char		*w_wall_path;
+	char		*e_wall_path;
 	int			**n_wall;
 	int			**s_wall;
 	int			**w_wall;
@@ -141,7 +146,7 @@ typedef struct s_screen
 	size_t		width;
 	size_t		height;
 	void		*win;
-	t_img		*img;	
+	t_img		*img;
 }	t_screen;
 
 // App
@@ -157,15 +162,15 @@ typedef struct s_app
 // Init
 
 t_entity	init_player(int x, int y, char facing);
-t_app		*init_app(const char *map_filename);
+t_app		*init_app(const char *scene_description_filename);
 
 // Map
 
 int			is_map_closed(t_map *map);
-void		parse_line(t_game *game, size_t y);
-void		set_map_size(t_map *map);
-void		load_map(t_map *map);
-t_map		*init_map(const char *filename);
+void		check_line(t_game *game, size_t y);
+void		set_map_size(t_map *map, int fd);
+void		init_map(t_map *map, int fd);
+void		skip_lines(int fd, size_t n);
 
 // Img
 
@@ -173,12 +178,15 @@ t_img		*import_image(t_app *app, char a, int x, int y);
 void		place_img(t_app *app, char tile, t_int_p p);
 
 // Textures
-int			get_tex(t_game *game, void *mlx);
+void		load_textures(t_app *app);
+
+// Parsing
+void		parse_scene_description_file(t_app *app, const char *filename);
 
 // Checks
 
 void		check_invalid_chars(const char *line);
-void		parse_map(t_game *game);
+void		check_map(t_game *game);
 void		check_map_file_extension(const char *filename);
 void		check_macros(void);
 
@@ -213,7 +221,7 @@ int			draw3d(t_app *app);
 
 // Cleanup
 
-void		free_matrix(void **matrix, void (*del)(void *));
+void		free_matrix(void **matrix);
 void		free_app(t_app *app);
 
 // Utils

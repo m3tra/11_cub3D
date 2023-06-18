@@ -34,14 +34,10 @@ static void	free_textures(t_tex *textures)
 {
 	if (textures)
 	{
-		if (textures->n_wall)
-			free_matrix((void **)textures->n_wall, NULL);
-		if (textures->s_wall)
-			free_matrix((void **)textures->n_wall, NULL);
-		if (textures->e_wall)
-			free_matrix((void **)textures->n_wall, NULL);
-		if (textures->w_wall)
-			free_matrix((void **)textures->n_wall, NULL);
+		free_matrix((void **)textures->n_wall);
+		free_matrix((void **)textures->n_wall);
+		free_matrix((void **)textures->n_wall);
+		free_matrix((void **)textures->n_wall);
 		free(textures);
 	}
 }

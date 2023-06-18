@@ -13,13 +13,11 @@
 #include "cub3d.h"
 
 // Returns allocated and initialized t_screen*
-static t_screen	*init_screen(t_app *app)
+static void	init_screen(t_app *app)
 {
 	t_screen	*s;
 
-	s = ft_calloc(1, sizeof(t_screen));
-	if (!s)
-		err_exit("Failed ft_calloc @init_screen", app);
+	s = app->screen;
 	if (DIMENTIONS == 2)
 	{
 		s->width = app->game->map->max_width * TILE_SIZE;
@@ -35,8 +33,6 @@ static t_screen	*init_screen(t_app *app)
 		err_exit("Failed mlx_new_window @init_screen", app);
 
 	s->img = my_mlx_new_image(app->mlx, s->width, s->height);
-
-	return (s);
 }
 
 // Sets player's position to middle of given tile and other default values
@@ -62,37 +58,8 @@ t_entity	init_player(int x, int y, char facing)
 	return (player);
 }
 
-void	init_tex_vars(t_game *game)
-{
-	game->textures->n_wall = NULL;
-	game->textures->s_wall = NULL;
-	game->textures->e_wall = NULL;
-	game->textures->w_wall = NULL;
-}
-
-// Returns allocated and initialized t_game*
-static t_game	*init_game(const char *map_filename, t_app *app)
-{
-	t_game	*game;
-
-	game = ft_calloc(1, sizeof(t_game));
-	if (!game)
-		err_exit("Failed ft_calloc @init_game", NULL);
-	game->textures = ft_calloc(1, sizeof(t_tex));
-	if (!game->textures)
-		err_exit("Failed ft_calloc @init_game", NULL);
-	game->map = init_map(map_filename);
-	if (!is_map_closed(game->map))
-		err_exit("Map not enclosed by walls", NULL);
-	parse_map(game);
-	init_tex_vars(game);
-	if (get_tex(game, app->mlx) < 0)
-		err_exit("Failed to load textures @init_game", app);
-	return (game);
-}
-
 // Returns allocated and initialized t_app*
-t_app	*init_app(const char *map_filename)
+t_app	*init_app(const char *scene_description_filename)
 {
 	t_app	*app;
 
@@ -102,7 +69,20 @@ t_app	*init_app(const char *map_filename)
 	app->mlx = mlx_init();
 	if (!app->mlx)
 		err_exit("Failed mlx_init @init_app", app);
-	app->game = init_game(map_filename, app);
-	app->screen = init_screen(app);
+
+	app->game = ft_calloc(1, sizeof(t_game));
+	if (!app->game)
+		err_exit("Failed ft_calloc @init_game", NULL);
+
+	app->game->map = ft_calloc(1, sizeof(t_map));
+	if (!app->game->map)
+		err_exit("Failed ft_calloc @init_map", NULL);
+
+	app->screen = ft_calloc(1, sizeof(t_screen));
+	if (!app->screen)
+		err_exit("Failed ft_calloc @init_screen", app);
+
+	parse_scene_description_file(app, scene_description_filename);
+	init_screen(app);
 	return (app);
 }

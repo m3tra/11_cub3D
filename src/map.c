@@ -6,7 +6,7 @@
 /*   By: fporto <fporto@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 16:53:22 by fporto            #+#    #+#             */
-/*   Updated: 2023/03/15 19:14:24 by fporto           ###   ########.fr       */
+/*   Updated: 2023/06/18 05:47:38 by fporto           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,12 @@ int	is_map_closed(t_map *map)
 	}
 	y = -1;
 	while (++y < map->max_height)
-		free(new_map[y]);
-	free(new_map);
+		ft_free(new_map[y]);
+	ft_free(new_map);
 	return (res);
 }
 
-void	parse_line(t_game *game, size_t y)
+void	check_line(t_game *game, size_t y)
 {
 	const char	*line;
 	size_t		x;
@@ -110,7 +110,7 @@ void	parse_line(t_game *game, size_t y)
 }
 
 // Checks if map is valid
-void	parse_map(t_game *game)
+void	check_map(t_game *game)
 {
 	t_map	*map;
 	int		player;
@@ -121,8 +121,10 @@ void	parse_map(t_game *game)
 	player = 0;
 	map = game->map;
 	y = -1;
+	// printf("max_heigth: %ld\n", map->max_height);
 	while (++y < map->max_height)
 	{
+		// printf("line: %s\n", map->map_arr[y]);
 		x = -1;
 		while (++x < map->max_width)
 		{
@@ -136,96 +138,84 @@ void	parse_map(t_game *game)
 			else if (c == 'T')
 				++game->n_torches;
 		}
-		parse_line(game, y);
+		check_line(game, y);
 	}
 	if (!player)
-		err_exit("Missing player @parse_map", NULL);
+		err_exit("Missing player @check_map", NULL);
+
+	if (!is_map_closed(map))
+		err_exit("Map not enclosed by walls", NULL);
+}
+
+// Advances file by n lines
+void	skip_lines(int fd, size_t n)
+{
+	int		ret;
+	char	*line;
+
+	while (n > 0)
+	{
+		ret = get_next_line(fd, &line);
+		if (!ret)
+			break ;
+		ft_free(line);
+		n--;
+	}
 }
 
 // Reads map file and sets it's max height and width in the struct
-void	set_map_size(t_map *map)
+void	set_map_size(t_map *map, int fd)
 {
-	int		fd;
 	char	*line;
 	int		ret;
 	size_t	len;
 
-	fd = open(map->filename, O_RDONLY);
-	if (fd == -1)
-		err_exit("Invalid file path @set_map_size", NULL);
+	// skip_lines(fd, map->file_line_number_start);
 
+	// Parse map part of input file
 	while (1)
 	{
 		ret = get_next_line(fd, &line);
-		if (line && line[0])
+		if (ret && line && line[0])
 		{
+			printf("line: %s\n", line);
 			++map->max_height;
 			len = ft_strlen(line);
 			if (len > map->max_width)
 				map->max_width = len;
+			ft_free(line);
 		}
-		ft_free(line);
 		if (!ret)
 			break ;
 	}
-	close(fd);
 }
 
-// Reads map from file into memory
-void	load_map(t_map *map)
+// Allocates memory, zeros it, then pre-fills each tile with a space char
+char	**prealloc_map_array(size_t max_height, size_t max_width)
 {
-	int		fd;
-	int		ret;
-	char	*line;
+	char	**map_arr;
 	size_t	y;
 
-	fd = open(map->filename, O_RDONLY);
-	if (fd == -1)
-		err_exit("Invalid file path @load_map", NULL);
+	map_arr = ft_calloc(max_height + 1, sizeof(char *));
+	if (!map_arr)
+		err_exit("Failed ft_calloc @init_map", NULL);
 
 	y = -1;
-	while (++y < map->max_height)
+	while (++y < max_height)
 	{
-		ret = get_next_line(fd, &line);
-		if (line && line[0])
-		{
-			ft_memcpy(map->map_arr[y], line, ft_strlen(line));
-			ft_free(line);
-		}
+		map_arr[y] = ft_calloc(1, max_width + 1);
+		if (!map_arr[y])
+			err_exit("Failed ft_calloc @init_map", NULL);
+		ft_memset(map_arr[y], ' ', max_width);
 	}
-	close(fd);
+	return (map_arr);
 }
 
-t_map	*init_map(const char *filename)
+void	init_map(t_map *map, int fd)
 {
-	t_map	*map;
-	size_t	y;
-
-	check_map_file_extension(filename);
-
-	map = ft_calloc(1, sizeof(t_map));
-	if (!map)
-		err_exit("Failed ft_calloc @init_map", NULL);
-	map->filename = filename;
-
-	set_map_size(map);
+	set_map_size(map, fd);
 	if (map->max_height < 3 || map->max_width < 3)
 		err_exit("Map size too small @init_map", NULL);
 
-	map->map_arr = ft_calloc(map->max_height + 1, sizeof(char *));
-	if (!map->map_arr)
-		err_exit("Failed ft_calloc @init_map", NULL);
-
-	y = -1;
-	while (++y < map->max_height)
-	{
-		map->map_arr[y] = ft_calloc(1, map->max_width + 1);
-		if (!map->map_arr[y])
-			err_exit("Failed ft_calloc @init_map", NULL);
-		ft_memset(map->map_arr[y], ' ', map->max_width);
-	}
-
-	load_map(map);
-
-	return (map);
+	map->map_arr = prealloc_map_array(map->max_height, map->max_width);
 }

@@ -22,7 +22,7 @@ void	check_invalid_chars(const char *line)
 
 	chars = MAP_CHARS;
 	x = -1;
-	while (line[++x])
+	while (line[++x] && line[x] != '\n' && line[x] != '\r')
 	{
 		bad = 1;
 		i = -1;
@@ -32,18 +32,6 @@ void	check_invalid_chars(const char *line)
 		if (bad)
 			err_exit("Bad tile in map @check_invalid_chars", NULL);
 	}
-}
-
-// Prints error message and exits the program if map file name doens't end in .cub
-void	check_map_file_extension(const char *filename)
-{
-	size_t	len;
-
-	len = ft_strlen(filename);
-	if (len > 256)
-		err_exit("Map file name is too long", NULL);
-	if (!ft_strstr(filename, ".cub"))
-		err_exit("Map file required to be in .cub format", NULL);
 }
 
 // Checks if header defines are valid

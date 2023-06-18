@@ -46,7 +46,7 @@ void	draw_3d_background(t_app *app)
 }
 
 // float degToRad(int a)
-// { 
+// {
 // 	return (a*M_PI/180.0);
 // }
 
@@ -69,7 +69,7 @@ void	draw_3d_background(t_app *app)
 // 	ra=FixAng(pa + (degToRad(FOV)/2));       //ray set back 30 degrees
 // 	for(r=0;r<FOV;r++)
 // 	{
-// 	//---Vertical--- 
+// 	//---Vertical---
 // 		dof=0; side=0; disV=100000;
 // 		float Tan=tan(ra);
 // 		if (cos(ra)> 0.0001) //looking left
@@ -105,18 +105,18 @@ void	draw_3d_background(t_app *app)
 // 			{
 // 				dof = map->max_width;
 // 				disV=cos(ra)*(rx-pos.x) - sin(ra)*(ry-pos.y);
-// 			}//hit         
+// 			}//hit
 // 			else
 // 			{
 // 				rx+=xo;
 // 				ry+=yo;
 // 				dof ++;
 // 			}//check next vertical
-// 		} 
+// 		}
 // 		vx=rx; vy=ry;
 // 	//---Horizontal---
 // 		dof=0; disH=100000;
-// 		Tan=1.0/Tan; 
+// 		Tan=1.0/Tan;
 // 		if (sin(ra) > 0.0001) //looking up
 // 		{
 // 			ry=(((int)pos.y>>6)<<6) -0.0001;
@@ -137,7 +137,7 @@ void	draw_3d_background(t_app *app)
 // 			ry=pos.y;
 // 			dof = map->max_height;
 // 		}
-// 		while(dof < (int)map->max_height) 
+// 		while(dof < (int)map->max_height)
 // 		{
 // 			mx=(int)(rx/64);
 // 			my=(int)(ry/64);
@@ -163,7 +163,7 @@ void	draw_3d_background(t_app *app)
 // 			color = create_trgb(255, 0, 0, 255);
 // 		}
 // 		int ca = FixAng(pa-ra);
-// 		disH = disH*cos(degToRad(ca)); //fix fisheye 
+// 		disH = disH*cos(degToRad(ca)); //fix fisheye
 // 		int lineH = (32 * WIN_HEIGHT)/disH;
 // 		if(lineH>WIN_HEIGHT)
 // 			lineH=WIN_HEIGHT; //line height and limit
@@ -247,7 +247,7 @@ double v_check(t_map *map, double ang, t_check *v, t_float_p pos)
 			if (map->map_arr[(int)v->ry][(int)v->rx] == '1')
 				return (v->z = dist_3d(v->rx, v->ry, pos.x, pos.y));
 			(void) (t_float_p){v->rx += off.x, v->ry += off.y};
-			
+
 		}
 	}
 	return (v->z = -1);
@@ -343,13 +343,13 @@ float	fix_angle(float pa)
 
 int	draw3d(t_app *app)
 {
-	float pa;
-	
+	float	pa;
+
 	pa = fix_angle(app->game->player.facing);
 	draw_3d_background(app);
 	drawWalls(app, app->game->map,
 		app->game->player.pos, pa);
-	draw2d(app);
+	// draw2d(app);
 	my_mlx_put_image_to_window(app);
 	return (1);
 }
