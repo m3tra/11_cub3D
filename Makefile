@@ -99,7 +99,7 @@ ifeq (${PEDANTIC},true)
 	CFLAGS += -Wpedantic -Werror=pedantic -pedantic-errors
 	CFLAGS += -Wcast-qual -Wdisabled-optimization -Wformat=2 -Wuninitialized
 	CFLAGS += -Winit-self -Wmissing-include-dirs -Wredundant-decls -Wshadow
-	CFLAGS += -Wstrict-overflow=5 -Wundef -fdiagnostics-show-option
+	CFLAGS += -Wundef -fdiagnostics-show-option
 	CFLAGS += -fstack-protector-all
 	ifeq (${CC},gcc)
 		CFLAGS += -Wformat-signedness -Wformat-truncation=2 -Wformat-overflow=2
@@ -263,6 +263,7 @@ all: ${BINS}
 
 .SECONDEXPANSION:
 ${BIN_ROOT}${NAME1}: ${LIBFT} $$(call get_files,$${@F},$${OBJS_LIST})
+	${AT}make -i -C ${MINILIBX_ROOT} all
 	${AT}printf ${YELLOW}"[CREATING ${@F}]\n"${WHITE} ${BLOCK}
 	${AT}mkdir -p ${@D} ${BLOCK}
 	${AT}${CC} ${CFLAGS} ${INCS} ${ASAN_FILE}\
@@ -294,6 +295,7 @@ clean_dep: $$(call get_lib_target,$${DEFAULT_LIBS},$$@)
 	${AT}find ${DEP_ROOT} -type f -name "*.d" -delete ${BLOCK}
 
 clean_all: fclean clean_dep
+	${AT}make -i -C ${MINILIBX_ROOT} clean
 	${AT}rm -r obj/ dep/ bin/
 
 re: clean clean_dep all
